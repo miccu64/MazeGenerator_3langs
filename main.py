@@ -1,6 +1,6 @@
 import random
 
-
+# http://weblog.jamisbuck.org/2011/1/24/maze-generation-hunt-and-kill-algorithm
 def number_to_direction(numb: int) -> [int]:
     if numb == 1:
         return [-1, 0]
