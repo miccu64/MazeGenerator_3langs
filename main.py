@@ -5,7 +5,7 @@ import random
 # http://weblog.jamisbuck.org/2011/1/24/maze-generation-hunt-and-kill-algorithm
 
 
-# 1 -> lewo, 2 -> prawo, 4 -> dół, 8 -> góra
+# 1 -> left, 2 -> right, 4 -> down, 8 -> up
 def number_to_direction(numb: int) -> [int]:
     if numb == 1:
         return [-1, 0]
@@ -49,10 +49,8 @@ def walk(grid: [], current_x: int, current_y: int, x_grid_size: int, y_grid_size
         new_y = current_y + direction[1]
         if new_x < 0 or new_y < 0 or new_x >= x_grid_size or new_y >= y_grid_size or grid[new_x][new_y] != 0:
             continue
-        transposed_grid = [[grid[j][i] for j in range(x_grid_size)] for i in range(y_grid_size)]
         grid[current_x][current_y] += move
         grid[new_x][new_y] += opposite_move(move)
-        transposed_grid = [[grid[j][i] for j in range(x_grid_size)] for i in range(y_grid_size)]
         return [new_x, new_y]
 
 
@@ -70,7 +68,6 @@ def hunt(grid: [], x_grid_size: int, y_grid_size: int):
                 y_new = y + direction[1]
                 if 0 <= x_new < x_grid_size and 0 <= y_new < y_grid_size and grid[x_new][y_new] != 0:
                     neighbors.append(move)
-            transposed_grid = [[grid[j][i] for j in range(x_grid_size)] for i in range(y_grid_size)]
 
             if (len(neighbors)) == 0:
                 continue
@@ -78,9 +75,8 @@ def hunt(grid: [], x_grid_size: int, y_grid_size: int):
             move = random.choice(neighbors)
             direction = number_to_direction(move)
             grid[x][y] += move
-            # raczej zbędna linia
             grid[x+direction[0]][y+direction[1]] += opposite_move(move)
-            transposed_grid = [[grid[j][i] for j in range(x_grid_size)] for i in range(y_grid_size)]
+            # transposed_grid = [[grid[j][i] for j in range(x_grid_size)] for i in range(y_grid_size)]
 
             return [x, y]
 
@@ -97,14 +93,9 @@ def generate_maze(x_size: int, y_size: int) -> []:
 
 
 def print_maze(grid: [], x_size: int, y_size: int):
-    transposed_grid = [[grid[j][i] for j in range(x_size)] for i in range(y_size)]
-    #x_size_copy = x_size
-    #x_size = y_size
-   # y_size = x_size_copy
-
-    # powiększam grid o 1 w każdą stronę, żeby poprawnie móc wyprintować labirynt
+    # append grid by 1 in x and y to properly print maze
     maze_to_print = [[3] * (y_size + 1) for _ in range(x_size + 1)]
-    # 1 - dolna ściana, 2 - prawa ściana, 3 - obie ściany
+    # 1 - bottom wall, 2 - right wall, 3 - both walls
     for x in range(x_size + 1):
         maze_to_print[x][0] = 1
     for y in range(y_size + 1):
@@ -139,7 +130,6 @@ def print_maze(grid: [], x_size: int, y_size: int):
             else:
                 line += '  '
         print(line)
-    a=0
 
 
 def main():
