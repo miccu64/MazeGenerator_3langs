@@ -6,7 +6,7 @@ import random
 
 
 # 1 -> left, 2 -> right, 4 -> down, 8 -> up
-def number_to_direction(numb: int) -> [int]:
+def number_to_direction(numb: int):
     if numb == 1:
         return [-1, 0]
     if numb == 2:
@@ -17,7 +17,7 @@ def number_to_direction(numb: int) -> [int]:
         return [0, -1]
 
 
-def opposite_move(numb: int) -> [int]:
+def opposite_move(numb: int):
     if numb == 1:
         return 2
     if numb == 2:
@@ -28,7 +28,7 @@ def opposite_move(numb: int) -> [int]:
         return 4
 
 
-def random_move(used_moves: [int]) -> int:
+def random_move(used_moves) -> int:
     if (len(used_moves)) == 4:
         return 0
 
@@ -39,7 +39,7 @@ def random_move(used_moves: [int]) -> int:
     return new_direction
 
 
-def walk(grid: [], current_x: int, current_y: int, x_grid_size: int, y_grid_size: int) -> [int]:
+def walk(grid, current_x: int, current_y: int, x_grid_size: int, y_grid_size: int):
     used_moves = []
     while len(used_moves) < 4:
         move = random_move(used_moves)
@@ -54,7 +54,7 @@ def walk(grid: [], current_x: int, current_y: int, x_grid_size: int, y_grid_size
         return [new_x, new_y]
 
 
-def hunt(grid: [], x_grid_size: int, y_grid_size: int):
+def hunt(grid, x_grid_size: int, y_grid_size: int):
     for x in range(x_grid_size):
         for y in range(y_grid_size):
             if grid[x][y] != 0:
@@ -81,7 +81,7 @@ def hunt(grid: [], x_grid_size: int, y_grid_size: int):
             return [x, y]
 
 
-def generate_maze(x_size: int, y_size: int) -> []:
+def generate_maze(x_size: int, y_size: int):
     grid = [[0] * y_size for _ in range(x_size)]
     point = [random.randint(0, x_size - 1), random.randint(0, y_size - 1)]
 
@@ -92,7 +92,7 @@ def generate_maze(x_size: int, y_size: int) -> []:
     return grid
 
 
-def print_maze(grid: [], x_size: int, y_size: int):
+def print_maze(grid, x_size: int, y_size: int):
     # append grid by 1 in x and y to properly print maze
     maze_to_print = [[3] * (y_size + 1) for _ in range(x_size + 1)]
     # 1 - bottom wall, 2 - right wall, 3 - both walls
@@ -106,7 +106,7 @@ def print_maze(grid: [], x_size: int, y_size: int):
         for y in range(y_size):
             x_new = x + 1
             y_new = y + 1
-            for i in range (0, 3):
+            for i in range(0, 3):
                 move = grid[x][y] & 1 << i
                 if move == 2 and (maze_to_print[x_new][y_new] == 2 or maze_to_print[x_new][y_new] == 3):
                     maze_to_print[x_new][y_new] -= 2
@@ -130,6 +130,15 @@ def print_maze(grid: [], x_size: int, y_size: int):
             else:
                 line += '  '
         print(line)
+
+
+def solve_maze(x_size: int, y_size: int, x_start: int, y_start: int, x_end: int, y_end: int, grid):
+    flattened_grid = []
+    for y in range(y_size):
+        for x in range(x_size):
+            flattened_grid.append(grid[x][y])
+
+    a=0
 
 
 def main():
