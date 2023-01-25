@@ -13,11 +13,11 @@ findMinValue() {
     local lengthsLocalLength=${#lengthsArrayLocal[@]}
     lengthsLocalLength=$((lengthsLocalLength - 1))
     for cellIndex in $(seq 0 $lengthsLocalLength); do
-        cell=${lengthsArrayLocal[$cellIndex]}
+        cell="${lengthsArrayLocal[$cellIndex]}"
         # check value and check if key exists
         if [ "$cell" -gt "-1" ] && [ "$cell" -lt "$min" ] && ! [ "${visitedCellsArrayLocal[${cellIndex}]+abc}" ]; then
-            min=$cell
-            indexOfMin=$cellIndex
+            min="$cell"
+            indexOfMin="$cellIndex"
         fi
     done
 
@@ -26,35 +26,28 @@ findMinValue() {
 }
 
 checkAdjacency() {
-    # return allows to return nums from 0 to 255
     # in my code 2 - true, 3 - false, to not confuse 0/1 as typical bool, bcs status 0 is success there
     local cell1Local=$1
     local cell2Local=$2
     local xSizeLocal=$3
-    local ySizeLocal=$3
+    local ySizeLocal=$4
 
     local maxIndex=$((xSizeLocal * ySizeLocal - 1))
-    if [ "$cell1Local" -gt "$maxIndex" ] || [ "$cell2Local" -gt "$maxIndex" ] || [ "$cell1Local" -lt "0" ] || [ "$cell2Local" -lt "0" ] || [ "$cell1Local" -eq "$cell2Local" ]; then
-        return 3
+    if [ "$cell1Local" -gt "$maxIndex" ] || [ "$cell2Local" -gt "$maxIndex" ] || [ "$cell1Local" -lt "0" ] || [ "$cell2Local" -lt "0" ]; then
+        echo "3"
+        return
     fi
 
-    # Bash automatically floor numbers
-    local cell1Row=$((cell1Local / xSizeLocal))
-    local cell2Row=$((cell2Local / xSizeLocal))
-    local xDifference=$((cell1Local - cell2Local))
+    echo "2"
+}
 
-    if { [ "$xDifference" -eq "-1" ] || [ "$xDifference" -eq "1" ]; } && [ "$cell1Row" -eq "$cell2Row" ]; then
-        return 2
-    fi
+getBitFromNumber() {
+    local number=$1
+    local bit=$2
 
-    local yDifference1=$((cell1Local - xSizeLocal))
-    local yDifference2=$((cell1Local + xSizeLocal))
-
-    if [ "$yDifference1" -eq "$cell2Local" ] || [ "$yDifference2" -eq "$cell2Local" ]; then
-        return 2
-    fi
-    
-    return 3
+    local D2B=({0..1}{0..1}{0..1}{0..1})
+    local binary="${D2B[$number]}"
+    echo "${binary:${bit}:1}"
 }
 
 argvLength=$#
@@ -73,19 +66,54 @@ grid=("${grid[@]:6}")
 
 declare -A visitedCellsArray
 
-lengthsArray=($(for i in $(seq 1 $maxLength); do echo -1; done))
+maxLength=$((xSize * ySize - 1))
+lengthsArray=($(for i in $(seq 0 ${maxLength}); do echo -1; done))
 currentIndex=$((xStart + (yStart * xSize)))
 # initial value for starting cell
 lengthsArray["$currentIndex"]=0
 destinationIndex=$((xEnd + (yEnd * xSize)))
 
-counter=0
 while [ "$currentIndex" -ne "$destinationIndex" ]; do
-    currentIndex="$(findMinValue visitedCellsArray lengthsArray)"
+    currentValue="${grid[$currentIndex]}"
+
+    # check if adjacent cells are connected with this cell
+    adjacentIndexes=($((currentIndex - 1)) $((currentIndex + 1)) $((currentIndex + xSize)) $((currentIndex - xSize)))
+    for index in $(seq 0 3); do
+        adjacentIndex=${adjacentIndexes[index]}
+        result1=$(checkAdjacency "$currentIndex" "$adjacentIndex" "$xSize" "$ySize")
+        if [ "$result1" -ne "2" ]; then
+            continue
+        fi
+
+        result2=0
+        # numbers and its walls (same pattern as in Python): 1 -> left, 2 -> right, 4 -> down, 8 -> up
+        adjacentValue="${grid[$adjacentIndex]}"
+
+        if [ "$index" -eq "0" ]; then
+            result1=$(getBitFromNumber "$adjacentValue" 2)
+            result2=$(getBitFromNumber "$currentValue" 3)
+        elif [ "$index" -eq "1" ]; then
+            result1=$(getBitFromNumber "$adjacentValue" 3)
+            result2=$(getBitFromNumber "$currentValue" 2)
+        elif [ "$index" -eq "2" ]; then
+            result1=$(getBitFromNumber "$adjacentValue" 0)
+            result2=$(getBitFromNumber "$currentValue" 1)
+        else
+            result1=$(getBitFromNumber "$adjacentValue" 1)
+            result2=$(getBitFromNumber "$currentValue" 0)
+        fi
+
+        if [ "$result1" -eq "1" ] && [ "$result2" -eq "1" ]; then
+            currentLength=$((lengthsArray["$currentIndex"] + 1))
+            lengthsArray["$adjacentValue"]="$currentLength"
+            #printf '%s\n' "${lengthsArray[@]}"
+        fi
+    done
+
+    # mark as visited cell
     visitedCellsArray[${currentIndex}]=1
-
-    # find adjacent cells and check if they are connected with this cell
-    # left cell
-    adjacentIndex=$((currentIndex - 1))
-
+    # find next index
+    currentIndex=$(findMinValue visitedCellsArray lengthsArray)
 done
+
+echo "$currentIndex"
