@@ -1,6 +1,7 @@
 #!/bin/bash
-# Autor: Konrad Micek, informatyka stosowana 1 rok II st.
-# using Dijkstra's algorithm
+# Author: Konrad Micek, Applied Computer Science, Bachelors degree 1st year
+
+# solving maze by using Dijkstra's algorithm
 
 findMinValue() {
     local -n visitedCellsArrayLocal lengthsArrayLocal
