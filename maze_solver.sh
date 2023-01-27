@@ -105,7 +105,7 @@ while [ "$currentIndex" -ne "$destinationIndex" ]; do
 
         if [ "$result1" -eq "1" ] && [ "$result2" -eq "1" ]; then
             currentLength=$((lengthsArray["$currentIndex"] + 1))
-            lengthsArray["$adjacentValue"]="$currentLength"
+            lengthsArray["$adjacentIndex"]="$currentLength"
             #printf '%s\n' "${lengthsArray[@]}"
         fi
     done
@@ -116,4 +116,7 @@ while [ "$currentIndex" -ne "$destinationIndex" ]; do
     currentIndex=$(findMinValue visitedCellsArray lengthsArray)
 done
 
-echo "$currentIndex"
+# return results
+for length in "${lengthsArray[@]}"; do
+    echo "$length"
+done
