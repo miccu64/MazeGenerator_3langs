@@ -1,5 +1,7 @@
 import tkinter
 from tkinter import messagebox
+import subprocess
+import maze_worker
 
 
 def integer_check(in_str, acttyp):
@@ -9,11 +11,26 @@ def integer_check(in_str, acttyp):
     return True
 
 
+def get_2d_grid(stdout: str, x_size: int, y_size: int):
+    splitted_stdout = stdout.split(' ')
+    result = [[0] * y_size for _ in range(x_size)]
+    for i in range(len(splitted_stdout) - 1):
+        y = int(i / x_size)
+        x = i % x_size
+        result[x][y] = int(splitted_stdout[i])
+    return result
+
+
 def button_callback():
     x = int(entry_xsize.get())
     y = int(entry_ysize.get())
     if x < 4 or x > 1000 or y < 4 or y > 1000:
         tkinter.messagebox.showerror('Error', 'Wrong size of maze. X and Y should be from interval <4, 1000>.')
+        return
+    # run Perl script and get its STDOUT
+    result = subprocess.run(['./perl_maze_generator.pl', str(x), str(y)], stdout=subprocess.PIPE, text=True)
+    grid = get_2d_grid(result.stdout, x, y)
+    maze_worker.print_maze(grid, x, y)
 
 
 window = tkinter.Tk()
@@ -29,7 +46,7 @@ entry_xsize = tkinter.Entry(window, validate="key")
 entry_xsize.grid(column=1, row=1, sticky=tkinter.E, padx=10, pady=5)
 entry_xsize.config(font=("Calibri", 22))
 entry_xsize['validatecommand'] = (entry_xsize.register(integer_check), '%P', '%d')
-entry_xsize.insert(0, '10')
+entry_xsize.insert(0, '4')
 
 label_ysize = tkinter.Label(window, text="Y size:")
 label_ysize.grid(column=1, row=2, sticky=tkinter.EW)
@@ -38,11 +55,10 @@ entry_ysize = tkinter.Entry(window, validate="key")
 entry_ysize.grid(column=1, row=3, sticky=tkinter.E, padx=10, pady=5)
 entry_ysize.config(font=("Calibri", 22))
 entry_ysize['validatecommand'] = (entry_ysize.register(integer_check), '%P', '%d')
-entry_ysize.insert(0, '10')
+entry_ysize.insert(0, '5')
 
 button_generate = tkinter.Button(window, text="Generate maze", command=button_callback)
-button_generate.grid(column=1, row = 4, pady=10)
+button_generate.grid(column=1, row=4, pady=10)
 button_generate.config(font=("Calibri", 22), height=2)
-
 
 window.mainloop()

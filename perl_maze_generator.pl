@@ -147,8 +147,6 @@ sub hunt {
     return (-1);
 }
 
-# @ARGV = ( 4, 5 );
-
 my $x_size = $ARGV[0];
 my $y_size = $ARGV[1];
 
@@ -170,8 +168,9 @@ while ( $point[0] > -1 ) {
     }
 }
 
+# return result as string separated by whitespaces
 foreach my $y ( 0 .. $y_size - 1 ) {
     foreach my $x ( 0 .. $x_size - 1 ) {
-        print( "$grid[$x][$y] " );
+        print("$grid[$x][$y] ");
     }
 }

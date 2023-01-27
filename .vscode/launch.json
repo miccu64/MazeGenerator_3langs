@@ -8,7 +8,7 @@
       "type": "perl",
       "request": "launch",
       "name": "Perl-Debug",
-      "program": "/home/krokodyl/Desktop/PJS/projekt/maze_generator_console/maze_worker.pl",
+      "program": "/home/krokodyl/Desktop/PJS/projekt/maze_generator_console/perl_maze_generator.pl",
       "stopOnEntry": true,
       "reloadModules": true
     },
