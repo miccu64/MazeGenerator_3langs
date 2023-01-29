@@ -2,6 +2,9 @@ import tkinter
 from tkinter import messagebox
 import subprocess
 import maze_worker
+from PIL import ImageTk, Image
+
+from maze_printer import MazePrinter
 
 
 def integer_check(in_str, acttyp):
@@ -32,6 +35,9 @@ def button_callback():
     grid = get_2d_grid(result.stdout, x, y)
     maze_worker.print_maze(grid, x, y)
 
+    printer = MazePrinter(grid)
+    printer.generate_image()
+
 
 window = tkinter.Tk()
 window.title("Maze generator & resolver")
@@ -58,7 +64,12 @@ entry_ysize['validatecommand'] = (entry_ysize.register(integer_check), '%P', '%d
 entry_ysize.insert(0, '5')
 
 button_generate = tkinter.Button(window, text="Generate maze", command=button_callback)
-button_generate.grid(column=1, row=4, pady=10)
+button_generate.grid(column=1, row=4, padx=10, pady=10, sticky=tkinter.EW)
 button_generate.config(font=("Calibri", 22), height=2)
 
+# initially transparent image
+img = ImageTk.PhotoImage(Image.new('RGBA', (200, 50)))
+label_image = tkinter.Label(window, image=img)
+label_image.grid(column=0)
+print(label_image.size)
 window.mainloop()
