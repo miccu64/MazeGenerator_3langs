@@ -42,7 +42,7 @@ sub opposite_move {
     }
 }
 
-sub randomInt {
+sub random_int {
 
     # inclusive from both sides
     my $min = $_[0];
@@ -52,23 +52,23 @@ sub randomInt {
 }
 
 sub random_move {
-    my @usedMoves = @{ $_[0] };
-    if ( scalar @usedMoves >= 4 ) {
+    my @used_moves = @{ $_[0] };
+    if ( scalar @used_moves >= 4 ) {
         return 0;
     }
 
-    my $newDirection = 0;
+    my $new_direction = 0;
 
     # grep checks if element exists on array
-    while (( $newDirection == 0 )
-        || ( grep( /^$newDirection$/, @usedMoves ) ) )
+    while (( $new_direction == 0 )
+        || ( grep( /^$new_direction$/, @used_moves ) ) )
     {
-        $newDirection = randomInt( 0, 3 );
+        $new_direction = random_int( 0, 3 );
 
         # get decimal from binary
-        $newDirection = 2**$newDirection;
+        $new_direction = 2**$new_direction;
     }
-    return $newDirection;
+    return $new_direction;
 }
 
 sub walk {
@@ -135,7 +135,7 @@ sub hunt {
                 next;
             }
 
-            my $move = $neighbors[ randomInt( 0, scalar @neighbors - 1 ) ];
+            my $move = $neighbors[ random_int( 0, scalar @neighbors - 1 ) ];
             @direction = number_to_direction($move);
             $grid[$x][$y] += $move;
             $grid[ $x + $direction[0] ][ $y + $direction[1] ] +=
@@ -151,7 +151,7 @@ my $x_size = $ARGV[0];
 my $y_size = $ARGV[1];
 
 # choose randomly start point - better randomization than start from (0, 0)
-my @point = ( randomInt( 0, $x_size - 1 ), randomInt( 0, $y_size - 1 ) );
+my @point = ( random_int( 0, $x_size - 1 ), random_int( 0, $y_size - 1 ) );
 
 # create 2D array and init with 0
 my @grid = ();
@@ -161,6 +161,7 @@ foreach ( 0 .. $y_size - 1 ) {
     }
 }
 
+# Hunt and Kill - walk/hunt
 while ( $point[0] > -1 ) {
     @point = walk( \@grid, $point[0], $point[1], $x_size, $y_size );
     if ( $point[0] < 0 ) {
