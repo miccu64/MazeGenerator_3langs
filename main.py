@@ -1,6 +1,6 @@
 import tkinter
-from tkinter import messagebox
 from PIL import ImageTk, Image
+from tkinter import messagebox
 
 from maze_printer import MazePrinter
 
@@ -12,7 +12,12 @@ def integer_check(in_str, acttyp):
     return True
 
 
-def button_callback():
+def btn_resolve_callback():
+    #printer.resolve_maze()
+    print()
+
+
+def btn_generate_callback():
     x = int(entry_xsize.get())
     y = int(entry_ysize.get())
     if x < 4 or x > 1000 or y < 4 or y > 1000:
@@ -20,12 +25,25 @@ def button_callback():
         return
 
     printer = MazePrinter(x, y)
-    printer.generate_image()
+    img = ImageTk.PhotoImage(printer.generate_image())
+    #wpercent = (basewidth / float(img.size[0]))
+    #hsize = int((float(img.size[1]) * float(wpercent)))
+    #img = img.resize((basewidth, hsize), Image.Resampling.LANCZOS)
 
+    label_image.configure(image=img)
+    label_image.image = img
+    # refreshes size of label containing image
+    window.update_idletasks()
+    print(label_image.winfo_height())
+    print(label_image.winfo_width())
+    print(window.winfo_width())
+    print(window.winfo_height())
 
 window = tkinter.Tk()
 window.title("Maze generator & resolver")
-# window.attributes('-zoomed', True)
+# zoomed and not resizable
+window.attributes('-zoomed', True)
+window.resizable(False, False)
 window.columnconfigure(0, weight=11)
 window.columnconfigure(1, weight=1)
 
@@ -47,12 +65,17 @@ entry_ysize.config(font=("Calibri", 22))
 entry_ysize['validatecommand'] = (entry_ysize.register(integer_check), '%P', '%d')
 entry_ysize.insert(0, '5')
 
-button_generate = tkinter.Button(window, text="Generate maze", command=button_callback)
+button_generate = tkinter.Button(window, text="Generate maze", command=btn_generate_callback)
 button_generate.grid(column=1, row=4, padx=10, pady=10, sticky=tkinter.EW)
 button_generate.config(font=("Calibri", 22), height=2)
+
+button_resolve = tkinter.Button(window, text="Resolve maze", command=btn_resolve_callback)
+button_resolve.grid(column=1, row=5, padx=10, pady=10, sticky=tkinter.EW)
+button_resolve.config(font=("Calibri", 22), height=2)
 
 # initially transparent image
 img = ImageTk.PhotoImage(Image.new('RGBA', (200, 50)))
 label_image = tkinter.Label(window, image=img)
-label_image.grid(column=0)
+label_image.grid(column=0, row=0, rowspan=66)
+
 window.mainloop()

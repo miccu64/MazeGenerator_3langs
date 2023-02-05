@@ -9,10 +9,10 @@ class MazePrinter:
         self.x_size = x_size
         self.y_size = y_size
         self.block_size = 16
-        grid = self.generate_maze()
-        self.walls = self.convert_to_walls(grid)
+        self.grid = self.generate_maze()
+        self.walls = self.convert_to_walls(self.grid)
         self.apertures = self.add_apertures()
-        self.print_maze_console(grid)
+        self.print_maze_console(self.grid)
 
     def generate_image(self):
         # +3, bcs white line adds space
@@ -27,7 +27,8 @@ class MazePrinter:
                     self.insert_wall(draw, x, y, True)
 
         img.save('MazeUnresolved.jpeg', 'JPEG')
-        img.show()
+        # img.show()
+        return img
 
     def insert_wall(self, draw: ImageDraw, x: int, y: int, vertical: bool):
         start_x = self.block_size * x
@@ -90,6 +91,17 @@ class MazePrinter:
     def generate_maze(self):
         # run Perl script and get its STDOUT
         result = subprocess.run(['./perl_maze_generator.pl', str(self.x_size), str(self.y_size)], stdout=subprocess.PIPE, text=True)
+        grid = self.get_2d_grid(result.stdout, self.x_size, self.y_size)
+        return grid
+
+    def resolve_maze(self):
+        # run Bash script and get its STDOUT
+        args = ['./bash_maze_solver.sh', str(self.x_size), str(self.y_size), str(self.apertures[0][0]), str(self.apertures[0][1]), str(self.apertures[1][0]),
+                str(self.apertures[1][1])]
+        for y in self.y_size - 1:
+            for x in self.x_size - 1:
+                args.append(str(self.grid[x][y]))
+        result = subprocess.run(args, stdout=subprocess.PIPE, text=True)
         grid = self.get_2d_grid(result.stdout, self.x_size, self.y_size)
         return grid
 
