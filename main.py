@@ -13,7 +13,7 @@ def integer_check(in_str, acttyp):
 
 
 def btn_resolve_callback():
-    #printer.resolve_maze()
+    printer.resolve_maze()
     print()
 
 
@@ -24,6 +24,8 @@ def btn_generate_callback():
         tkinter.messagebox.showerror('Error', 'Wrong size of maze. X and Y should be from interval <4, 1000>.')
         return
 
+    # overwrite old printer instance
+    global printer
     printer = MazePrinter(x, y)
     img = ImageTk.PhotoImage(printer.generate_image())
     #wpercent = (basewidth / float(img.size[0]))
@@ -38,12 +40,16 @@ def btn_generate_callback():
     print(label_image.winfo_width())
     print(window.winfo_width())
     print(window.winfo_height())
+    button_resolve.config(state='normal')
+
+
+printer: MazePrinter
 
 window = tkinter.Tk()
 window.title("Maze generator & resolver")
 # zoomed and not resizable
-window.attributes('-zoomed', True)
-window.resizable(False, False)
+#window.attributes('-zoomed', True)
+#window.resizable(False, False)
 window.columnconfigure(0, weight=11)
 window.columnconfigure(1, weight=1)
 
@@ -71,7 +77,7 @@ button_generate.config(font=("Calibri", 22), height=2)
 
 button_resolve = tkinter.Button(window, text="Resolve maze", command=btn_resolve_callback)
 button_resolve.grid(column=1, row=5, padx=10, pady=10, sticky=tkinter.EW)
-button_resolve.config(font=("Calibri", 22), height=2)
+button_resolve.config(font=("Calibri", 22), height=2, state='disabled')
 
 # initially transparent image
 img = ImageTk.PhotoImage(Image.new('RGBA', (200, 50)))

@@ -54,7 +54,7 @@ getBitFromNumber() {
 argvLength=$#
 grid=("$@")
 if [ "$argvLength" -lt "2" ]; then
-    grid=(4 5 0 0 3 3 6 3 3 5 12 4 6 9 10 13 12 4 6 9 8 12 10 3 3 9)
+    grid=(4 5 3 0 1 4 2 5 6 5 6 9 8 12 12 6 7 9 12 8 10 5 10 3 3 0)
 fi
 
 xSize="${grid[0]}"

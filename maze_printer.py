@@ -76,11 +76,8 @@ class MazePrinter:
         self.walls[aperture2][self.y_size - 1] -= 1
         return [[aperture1, 0], [aperture2, self.y_size - 1]]
 
-    def resolve_maze(self):
-        return
-
     def get_2d_grid(self, stdout: str, x_size: int, y_size: int):
-        splitted_stdout = stdout.split(' ')
+        splitted_stdout = stdout.strip().split(' ')
         result = [[0] * y_size for _ in range(x_size)]
         for i in range(len(splitted_stdout) - 1):
             y = int(i / x_size)
@@ -96,10 +93,11 @@ class MazePrinter:
 
     def resolve_maze(self):
         # run Bash script and get its STDOUT
-        args = ['./bash_maze_solver.sh', str(self.x_size), str(self.y_size), str(self.apertures[0][0]), str(self.apertures[0][1]), str(self.apertures[1][0]),
-                str(self.apertures[1][1])]
-        for y in self.y_size - 1:
-            for x in self.x_size - 1:
+        # -1, bcs I appended maze by 1 in x and y for proper printing
+        args = ['./bash_maze_solver.sh', str(self.x_size - 1), str(self.y_size - 1), str(self.apertures[0][0] - 1), str(self.apertures[0][1]),
+                str(self.apertures[1][0] - 1), str(self.apertures[1][1] - 1)]
+        for y in range(self.y_size - 1):
+            for x in range(self.x_size - 1):
                 args.append(str(self.grid[x][y]))
         result = subprocess.run(args, stdout=subprocess.PIPE, text=True)
         grid = self.get_2d_grid(result.stdout, self.x_size, self.y_size)
