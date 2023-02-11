@@ -11,7 +11,7 @@ findMinValue() {
 
     local min=9999999
     local indexOfMin=-1
-    local lengthsLocalLength=${#lengthsArrayLocal[@]}
+    local lengthsLocalLength=$(("${#lengthsArrayLocal[@]}" - 1))
     lengthsLocalLength=$((lengthsLocalLength - 1))
     for cellIndex in $(seq 0 $lengthsLocalLength); do
         cell="${lengthsArrayLocal[$cellIndex]}"
@@ -26,8 +26,7 @@ findMinValue() {
     echo "$indexOfMin"
 }
 
-checkAdjacency() {
-    # in my code 2 - true, 3 - false, to not confuse 0/1 as typical bool, bcs status 0 is success there
+checkIndex() {
     local cell1Local=$1
     local cell2Local=$2
     local xSizeLocal=$3
@@ -35,11 +34,11 @@ checkAdjacency() {
 
     local maxIndex=$((xSizeLocal * ySizeLocal - 1))
     if [ "$cell1Local" -gt "$maxIndex" ] || [ "$cell2Local" -gt "$maxIndex" ] || [ "$cell1Local" -lt "0" ] || [ "$cell2Local" -lt "0" ]; then
-        echo "3"
+        echo "1"
         return
     fi
 
-    echo "2"
+    echo "0"
 }
 
 getBitFromNumber() {
@@ -81,13 +80,14 @@ while [ "$currentIndex" -ne "$destinationIndex" ]; do
     adjacentIndexes=($((currentIndex - 1)) $((currentIndex + 1)) $((currentIndex + xSize)) $((currentIndex - xSize)))
     for index in $(seq 0 3); do
         adjacentIndex=${adjacentIndexes[index]}
-        result1=$(checkAdjacency "$currentIndex" "$adjacentIndex" "$xSize" "$ySize")
-        if [ "$result1" -ne "2" ]; then
+        result1=$(checkIndex "$currentIndex" "$adjacentIndex" "$xSize" "$ySize")
+        if [ "$result1" -ne "0" ]; then
             continue
         fi
 
         result2=0
         # numbers and its walls (same pattern as in Python): 1 -> left, 2 -> right, 4 -> down, 8 -> up
+        # bits: 0<up> 1<down> 2<right> 3<left>
         adjacentValue="${grid[$adjacentIndex]}"
 
         if [ "$index" -eq "0" ]; then
@@ -104,15 +104,23 @@ while [ "$currentIndex" -ne "$destinationIndex" ]; do
             result2=$(getBitFromNumber "$currentValue" 0)
         fi
 
-        if [ "$result1" -eq "1" ] && [ "$result2" -eq "1" ]; then
+        if [ "$result1" -eq "1" ] && [ "$result2" -eq "1" ] && [ "${lengthsArray[$adjacentIndex]}" -lt "0" ]; then
             currentLength=$((lengthsArray["$currentIndex"] + 1))
             lengthsArray["$adjacentIndex"]="$currentLength"
             #printf '%s\n' "${lengthsArray[@]}"
+            for myy in $(seq 0 4); do
+                for myx in $(seq 0 3); do
+                    res=$((myy * 4 + myx))
+                    printf '%s' "${lengthsArray[$res]} "
+                done
+                printf '%s\n' ""
+            done
         fi
+        printf '%s\n' ""
     done
 
     # mark as visited cell
-    visitedCellsArray[${currentIndex}]=1
+    visitedCellsArray["${currentIndex}"]=1
     # find next index
     currentIndex=$(findMinValue visitedCellsArray lengthsArray)
 done
