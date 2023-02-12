@@ -1,11 +1,9 @@
 #!/bin/perl
 # Author: Konrad Micek, Applied Computer Science, Bachelors degree 1st year
+# generating maze using Hunt and Kill algorithm
 
 use strict;
 use warnings;
-
-# Hunt and Kill algorithm
-# http://weblog.jamisbuck.org/2011/1/24/maze-generation-hunt-and-kill-algorithm
 
 # 1 -> left, 2 -> right, 4 -> down, 8 -> up
 sub number_to_direction {
@@ -145,6 +143,27 @@ sub hunt {
         }
     }
     return (-1);
+}
+
+foreach (@ARGV) {
+    if ( ( $_ eq "-h" ) || ( $_ eq "--help" ) ) {
+        print
+"Application goal is to generate mazes with size specified by user and allow him to resolve it programmatically.\n";
+        print
+"Different application parts are built in Python (GUI/languages connector), Perl (generator) and Bash (resolver).\n";
+        print
+"Bash solving takes some time - it is Bash, so it obviously have right to be slow :-)\n";
+        print "After generation, picture is saved as file MazeUnresolved.jpeg.\n";
+        print "After resolving, picture is saved as file MazeResolved.jpeg.\n";
+        print "Picture is also shown in GUI.\n";
+        exit;
+    }
+}
+if ( scalar @ARGV != 2 ) {
+    print
+"That script won't run separately from Python GUI. Starting Python GUI script instead...";
+    system "./python_gui.py &";
+    exit;
 }
 
 my $x_size = $ARGV[0];

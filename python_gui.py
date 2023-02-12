@@ -1,8 +1,11 @@
+#!/usr/bin/python3
+# Author: Konrad Micek, Applied Computer Science, Bachelors degree 1st year
+
 import tkinter
 from PIL import ImageTk, Image
 from tkinter import messagebox
 
-from maze_printer import MazePrinter
+from python_maze_printer import MazePrinter
 
 
 def integer_check(in_str, acttyp):
@@ -31,9 +34,9 @@ def btn_generate_callback():
     global printer
     printer = MazePrinter(x, y)
     img = ImageTk.PhotoImage(printer.generate_image([]))
-    #wpercent = (basewidth / float(img.size[0]))
-    #hsize = int((float(img.size[1]) * float(wpercent)))
-    #img = img.resize((basewidth, hsize), Image.Resampling.LANCZOS)
+    # wpercent = (basewidth / float(img.size[0]))
+    # hsize = int((float(img.size[1]) * float(wpercent)))
+    # img = img.resize((basewidth, hsize), Image.Resampling.LANCZOS)
 
     label_image.configure(image=img)
     label_image.image = img
@@ -51,8 +54,8 @@ printer: MazePrinter
 window = tkinter.Tk()
 window.title("Maze generator & resolver")
 # zoomed and not resizable
-#window.attributes('-zoomed', True)
-#window.resizable(False, False)
+# window.attributes('-zoomed', True)
+# window.resizable(False, False)
 window.columnconfigure(0, weight=11)
 window.columnconfigure(1, weight=1)
 

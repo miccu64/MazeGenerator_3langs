@@ -3,3 +3,5 @@ perltidy.ERR
 MazeUnresolved.jpeg
 __pycache__/maze_printer.cpython-310.pyc
 .idea/codeStyles/codeStyleConfig.xml
+MazeResolved.jpeg
+__pycache__/python_maze_printer.cpython-310.pyc

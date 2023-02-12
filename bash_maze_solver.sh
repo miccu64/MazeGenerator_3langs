@@ -1,6 +1,5 @@
 #!/bin/bash
 # Author: Konrad Micek, Applied Computer Science, Bachelors degree 1st year
-
 # solving maze by using Dijkstra's algorithm
 
 findMinValue() {
@@ -84,10 +83,23 @@ checkAdjacency() {
     fi
 }
 
-argvLength=$#
 grid=("$@")
-if [ "$argvLength" -lt "2" ]; then
-    grid=(4 5 2 0 2 4 4 6 7 1 14 9 10 1 12 4 6 5 12 10 9 12 10 3 3 9)
+for i in "${grid[@]}"; do
+    if [ "$i" = "-h" ] || [ "$i" = "--help" ]; then
+        echo "Application goal is to generate mazes with size specified by user and allow him to resolve it programmatically."
+        echo "Different application parts are built in Python (GUI/languages connector), Perl (generator) and Bash (resolver)."
+        echo "Bash solving takes some time - it is Bash, so it obviously have right to be slow :-)"
+        echo "After generation, picture is saved as file MazeUnresolved.jpeg."
+        echo "After resolving, picture is saved as file MazeResolved.jpeg."
+        echo "Picture is also shown in GUI."
+        exit
+    fi
+done
+
+argvLength="$#"
+if [ "$argvLength" -lt "9" ]; then
+    echo "That script won't run separately from Python GUI. Starting Python GUI script instead..."
+    ./python_gui.py & exit
 fi
 
 xSize="${grid[0]}"
@@ -125,16 +137,7 @@ while [ "$currentIndex" -ne "$destinationIndex" ]; do
         if [ "$result" -eq "1" ] && [ "${lengthsArray[$adjacentIndex]}" -lt "0" ]; then
             currentLength=$((lengthsArray["$currentIndex"] + 1))
             lengthsArray["$adjacentIndex"]="$currentLength"
-            #printf '%s\n' "${lengthsArray[@]}"
-            # for myy in $(seq 0 4); do
-            #     for myx in $(seq 0 3); do
-            #         res=$((myy * 4 + myx))
-            #         printf '%s' "${lengthsArray[$res]} "
-            #     done
-            #     printf '%s\n' ""
-            # done
         fi
-        # printf '%s\n' ""
     done
 
     # mark as visited cell
@@ -171,12 +174,8 @@ while [ "$currentValue" -ne "0" ]; do
     done
 done
 
-
 # return results starting with special delimiter
 printf '%s' "Results:"
 for index in "${resultArray[@]}"; do
     printf '%s' "$index "
 done
-# for length in "${lengthsArray[@]}"; do
-#     printf '%s' "$length "
-# done
