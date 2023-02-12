@@ -14,30 +14,38 @@ class MazePrinter:
         self.apertures = self.add_apertures()
         self.print_maze_console(self.grid)
 
-    def generate_image(self):
+    def generate_image(self, path):
         # +3, bcs white line adds space
         img = Image.new(mode='RGB', size=(self.block_size * (self.x_size - 1) + 3, self.block_size * (self.y_size - 1) + 3))
         draw = ImageDraw.Draw(img)
 
         for y in range(self.y_size):
             for x in range(self.x_size):
+                if x > 0 and y > 0 and len(path) > 0:
+                    index1d = str((y - 1) * (self.x_size - 1) + x - 1)
+                    if index1d in path:
+                        self.insert_path(draw, x, y)
                 if self.walls[x][y] == 1 or self.walls[x][y] == 3:
                     self.insert_wall(draw, x, y, False)
                 if self.walls[x][y] == 2 or self.walls[x][y] == 3:
                     self.insert_wall(draw, x, y, True)
 
         img.save('MazeUnresolved.jpeg', 'JPEG')
-        # img.show()
+        img.show()
         return img
 
     def insert_wall(self, draw: ImageDraw, x: int, y: int, vertical: bool):
         start_x = self.block_size * x
         start_y = self.block_size * y
-
         if vertical:
-            draw.rectangle(((start_x, (start_y - self.block_size)), (start_x + 2, (start_y + 18 - self.block_size))), fill="white")
+            draw.rectangle(((start_x, (start_y - self.block_size)), (start_x + 2, (start_y + 18 - self.block_size))), fill="red")
         else:
-            draw.rectangle((((start_x - self.block_size), start_y), ((start_x - self.block_size) + 18, start_y + 2)), fill="white")
+            draw.rectangle((((start_x - self.block_size), start_y), ((start_x - self.block_size) + 18, start_y + 2)), fill="red")
+
+    def insert_path(self, draw: ImageDraw, x: int, y: int):
+        start_x = self.block_size * (x - 1)
+        start_y = self.block_size * (y - 1)
+        draw.rectangle(((start_x + 3, start_y + 3), (start_x + self.block_size + 2, start_y + self.block_size + 2)), fill="green")
 
     def convert_to_walls(self, grid):
         # append grid by 1 in x and y to properly print maze
@@ -101,8 +109,8 @@ class MazePrinter:
                 args.append(str(self.grid[x][y]))
         print(' '.join(args))
         res = subprocess.run(args, stdout=subprocess.PIPE, text=True)
-        grid = self.get_2d_grid(res.stdout.split('Results:')[-1], self.x_size, self.y_size)
-        return grid
+        path = res.stdout.split('Results:')[-1]
+        return self.generate_image(path.split(' '))
 
     def print_maze_console(self, grid):
         self.y_size -= 1

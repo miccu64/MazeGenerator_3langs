@@ -27,7 +27,7 @@ def btn_generate_callback():
     # overwrite old printer instance
     global printer
     printer = MazePrinter(x, y)
-    img = ImageTk.PhotoImage(printer.generate_image())
+    img = ImageTk.PhotoImage(printer.generate_image([]))
     #wpercent = (basewidth / float(img.size[0]))
     #hsize = int((float(img.size[1]) * float(wpercent)))
     #img = img.resize((basewidth, hsize), Image.Resampling.LANCZOS)
