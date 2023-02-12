@@ -13,8 +13,11 @@ def integer_check(in_str, acttyp):
 
 
 def btn_resolve_callback():
-    printer.resolve_maze()
-    print()
+    img = ImageTk.PhotoImage(printer.resolve_maze())
+    label_image.configure(image=img)
+    label_image.image = img
+    # refreshes size of label containing image
+    window.update_idletasks()
 
 
 def btn_generate_callback():

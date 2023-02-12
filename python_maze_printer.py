@@ -30,8 +30,10 @@ class MazePrinter:
                 if self.walls[x][y] == 2 or self.walls[x][y] == 3:
                     self.insert_wall(draw, x, y, True)
 
-        img.save('MazeUnresolved.jpeg', 'JPEG')
-        img.show()
+        if len(path) > 0:
+            img.save('MazeUnresolved.jpeg', 'JPEG')
+        else:
+            img.save('MazeResolved.jpeg', 'JPEG')
         return img
 
     def insert_wall(self, draw: ImageDraw, x: int, y: int, vertical: bool):
