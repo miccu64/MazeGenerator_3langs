@@ -79,7 +79,7 @@ class MazePrinter:
     def get_2d_grid(self, stdout: str, x_size: int, y_size: int):
         splitted_stdout = stdout.strip().split(' ')
         result = [[0] * y_size for _ in range(x_size)]
-        for i in range(len(splitted_stdout) - 1):
+        for i in range(len(splitted_stdout)):
             y = int(i / x_size)
             x = i % x_size
             result[x][y] = int(splitted_stdout[i])
@@ -99,8 +99,9 @@ class MazePrinter:
         for y in range(self.y_size - 1):
             for x in range(self.x_size - 1):
                 args.append(str(self.grid[x][y]))
-        result = subprocess.run(args, stdout=subprocess.PIPE, text=True)
-        grid = self.get_2d_grid(result.stdout, self.x_size, self.y_size)
+        print(' '.join(args))
+        res = subprocess.run(args, stdout=subprocess.PIPE, text=True)
+        grid = self.get_2d_grid(res.stdout.split('Results:')[-1], self.x_size, self.y_size)
         return grid
 
     def print_maze_console(self, grid):

@@ -12,7 +12,6 @@ findMinValue() {
     local min=9999999
     local indexOfMin=-1
     local lengthsLocalLength=$(("${#lengthsArrayLocal[@]}" - 1))
-    lengthsLocalLength=$((lengthsLocalLength - 1))
     for cellIndex in $(seq 0 $lengthsLocalLength); do
         cell="${lengthsArrayLocal[$cellIndex]}"
         # check value and check if key exists
@@ -34,11 +33,11 @@ checkIndex() {
 
     local maxIndex=$((xSizeLocal * ySizeLocal - 1))
     if [ "$cell1Local" -gt "$maxIndex" ] || [ "$cell2Local" -gt "$maxIndex" ] || [ "$cell1Local" -lt "0" ] || [ "$cell2Local" -lt "0" ]; then
-        echo "1"
+        echo "0"
         return
     fi
 
-    echo "0"
+    echo "1"
 }
 
 getBitFromNumber() {
@@ -53,7 +52,7 @@ getBitFromNumber() {
 argvLength=$#
 grid=("$@")
 if [ "$argvLength" -lt "2" ]; then
-    grid=(4 5 3 0 1 4 2 5 6 5 6 9 8 12 12 6 7 9 12 8 10 5 10 3 3 0)
+    grid=(4 5 1 0 3 4 6 3 5 4 10 5 10 9 6 9 2 5 12 6 5 12 10 9 10 9)
 fi
 
 xSize="${grid[0]}"
@@ -81,7 +80,7 @@ while [ "$currentIndex" -ne "$destinationIndex" ]; do
     for index in $(seq 0 3); do
         adjacentIndex=${adjacentIndexes[index]}
         result1=$(checkIndex "$currentIndex" "$adjacentIndex" "$xSize" "$ySize")
-        if [ "$result1" -ne "0" ]; then
+        if [ "$result1" -ne "1" ]; then
             continue
         fi
 
@@ -108,15 +107,15 @@ while [ "$currentIndex" -ne "$destinationIndex" ]; do
             currentLength=$((lengthsArray["$currentIndex"] + 1))
             lengthsArray["$adjacentIndex"]="$currentLength"
             #printf '%s\n' "${lengthsArray[@]}"
-            for myy in $(seq 0 4); do
-                for myx in $(seq 0 3); do
-                    res=$((myy * 4 + myx))
-                    printf '%s' "${lengthsArray[$res]} "
-                done
-                printf '%s\n' ""
-            done
+            # for myy in $(seq 0 4); do
+            #     for myx in $(seq 0 3); do
+            #         res=$((myy * 4 + myx))
+            #         printf '%s' "${lengthsArray[$res]} "
+            #     done
+            #     printf '%s\n' ""
+            # done
         fi
-        printf '%s\n' ""
+        # printf '%s\n' ""
     done
 
     # mark as visited cell
@@ -125,7 +124,8 @@ while [ "$currentIndex" -ne "$destinationIndex" ]; do
     currentIndex=$(findMinValue visitedCellsArray lengthsArray)
 done
 
-# return results
+# return results starting with special delimiter
+printf '%s' "Results:"
 for length in "${lengthsArray[@]}"; do
-    echo "$length"
+    printf '%s' "$length "
 done
