@@ -7,6 +7,18 @@ import sys
 
 from PIL import Image, ImageDraw
 
+if '-h' in sys.argv or '--help' in sys.argv:
+    print("Application goal is to generate mazes with size specified by user and allow him to resolve it programmatically.")
+    print("Different application parts are built in Python (GUI/languages connector), Perl (generator) and Bash (resolver).")
+    print("Bash solving takes some time - it is Bash, so it obviously have right to be slow :-)")
+    print("After generation, picture is saved as file MazeUnresolved.jpeg.")
+    print("After resolving, picture is saved as file MazeResolved.jpeg.")
+    print("Picture is also shown in GUI.")
+    exit()
+elif not any('python_gui.py' in s for s in sys.argv):
+    print("That script won't run separately from Python GUI. Starting Python GUI script instead...")
+    subprocess.Popen(['./python_gui.py'])
+    exit()
 
 class MazePrinter:
     def __init__(self, x_size, y_size):
@@ -115,5 +127,3 @@ class MazePrinter:
         res = subprocess.run(args, stdout=subprocess.PIPE, text=True)
         path = res.stdout.split('Results:')[-1]
         return self.generate_image(path.split(' '))
-
-print("aa")
