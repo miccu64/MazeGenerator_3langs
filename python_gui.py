@@ -64,6 +64,10 @@ if '-h' in sys.argv or '--help' in sys.argv:
     print("For guaranted experience use the newest version of Python.")
     exit()
 
+if sys.stdin.isatty():
+    print('Application started from TTY without GUI, so it cannot start its GUI. Exiting application...')
+    exit(1)
+
 try:
     printer: MazePrinter
 
@@ -101,13 +105,18 @@ try:
     button_resolve = tkinter.Button(window, text="Resolve maze", command=btn_resolve_callback)
     button_resolve.grid(column=1, row=5, padx=10, pady=10)
     button_resolve.config(font=("Calibri", 22), height=2, state='disabled')
+except:
+    print('Problem with Tkinter - it is probably not installed. Exiting application...')
+    exit(1)
 
+try:
     # initially transparent image
     img = ImageTk.PhotoImage(Image.new('RGBA', (200, 50)))
     label_image = tkinter.Label(window, image=img)
     label_image.grid(column=0, row=0, rowspan=66)
 except:
-    print('There was problem with initializing GUI. Application won\'t run properly. Exiting application...')
+    print('Problem with PIL (Pillow) - it is probably not installed. Exiting application...')
     exit(1)
+
 
 window.mainloop()
