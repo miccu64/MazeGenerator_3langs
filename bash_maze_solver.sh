@@ -96,6 +96,8 @@ for i in "${grid[@]}"; do
         echo "For proper working, user should have installed packages PIL (Pillow) and Tkinter."
         echo "User should run application on Linux capable of running GUI."
         echo "For guaranted experience use the newest version of Python."
+        echo "To install PIL and Tkinter, use following command:"
+        echo "sudo apt-get install python3-tk python3-pil python3-pil.imagetk"
         exit
     fi
 done

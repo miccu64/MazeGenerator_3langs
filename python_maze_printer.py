@@ -5,8 +5,6 @@ import random
 import subprocess
 import sys
 
-from PIL import Image, ImageDraw
-
 if '-h' in sys.argv or '--help' in sys.argv:
     print("Application goal is to generate mazes with size specified by user and allow him to resolve it programmatically.")
     print("Different application parts are built in Python (GUI/languages connector), Perl (generator) and Bash (resolver).")
@@ -18,11 +16,22 @@ if '-h' in sys.argv or '--help' in sys.argv:
     print("For proper working, user should have installed packages PIL (Pillow) and Tkinter.")
     print("User should run application on Linux capable of running GUI.")
     print("For guaranted experience use the newest version of Python.")
+    print("To install PIL and Tkinter, use following command:")
+    print("sudo apt-get install python3-tk python3-pil python3-pil.imagetk")
     exit()
 elif not any('python_gui.py' in s for s in sys.argv):
     print("That script won't run separately from Python GUI. Starting Python GUI script instead...")
     subprocess.Popen(['./python_gui.py'])
     exit()
+
+try:
+    from PIL import Image, ImageDraw
+except:
+    print('Problem with PIL (Pillow) - it is probably not installed. Exiting application...')
+    print("To install PIL and Tkinter, use following command:")
+    print("sudo apt-get install python3-tk python3-pil python3-pil.imagetk")
+    exit(1)
+
 
 class MazePrinter:
     def __init__(self, x_size, y_size):
@@ -35,7 +44,8 @@ class MazePrinter:
 
     def generate_image(self, path):
         # +3, bcs white line adds space
-        img = Image.new(mode='RGB', size=(self.block_size * (self.x_size - 1) + 3, self.block_size * (self.y_size - 1) + 3))
+        img = Image.new(mode='RGB', size=(
+            self.block_size * (self.x_size - 1) + 3, self.block_size * (self.y_size - 1) + 3))
         draw = ImageDraw.Draw(img)
 
         for y in range(self.y_size):
@@ -59,18 +69,22 @@ class MazePrinter:
         start_x = self.block_size * x
         start_y = self.block_size * y
         if vertical:
-            draw.rectangle(((start_x, (start_y - self.block_size)), (start_x + 2, (start_y + 18 - self.block_size))), fill="red")
+            draw.rectangle(((start_x, (start_y - self.block_size)),
+                           (start_x + 2, (start_y + 18 - self.block_size))), fill="red")
         else:
-            draw.rectangle((((start_x - self.block_size), start_y), ((start_x - self.block_size) + 18, start_y + 2)), fill="red")
+            draw.rectangle((((start_x - self.block_size), start_y),
+                           ((start_x - self.block_size) + 18, start_y + 2)), fill="red")
 
     def insert_path(self, draw: ImageDraw, x: int, y: int):
         start_x = self.block_size * (x - 1)
         start_y = self.block_size * (y - 1)
-        draw.rectangle(((start_x + 3, start_y + 3), (start_x + self.block_size + 2, start_y + self.block_size + 2)), fill="green")
+        draw.rectangle(((start_x + 3, start_y + 3), (start_x +
+                       self.block_size + 2, start_y + self.block_size + 2)), fill="green")
 
     def convert_to_walls(self, grid):
         # append grid by 1 in x and y to properly print maze
-        maze_to_print = [[3] * (self.y_size + 1) for _ in range(self.x_size + 1)]
+        maze_to_print = [[3] * (self.y_size + 1)
+                         for _ in range(self.x_size + 1)]
         # 1 - bottom wall, 2 - right wall, 3 - both walls
         for x in range(self.x_size + 1):
             maze_to_print[x][0] = 1
@@ -116,7 +130,8 @@ class MazePrinter:
 
     def generate_maze(self):
         # run Perl script and get its STDOUT
-        result = subprocess.run(['./perl_maze_generator.pl', str(self.x_size), str(self.y_size)], stdout=subprocess.PIPE, text=True)
+        result = subprocess.run(['./perl_maze_generator.pl', str(self.x_size),
+                                str(self.y_size)], stdout=subprocess.PIPE, text=True)
         grid = self.get_2d_grid(result.stdout, self.x_size, self.y_size)
         return grid
 

@@ -1,12 +1,35 @@
 #!/usr/bin/python3
 # Author: Konrad Micek, Applied Computer Science, Bachelors degree 1st year
 
-import tkinter
-from PIL import ImageTk, Image
-from tkinter import messagebox
 import sys
+import os
 
-from python_maze_printer import MazePrinter
+
+def tkinter_error():
+    print('Problem with Tkinter - it is probably not installed. Exiting application...')
+    print("To install PIL and Tkinter, use following command:")
+    print("sudo apt-get install python3-tk python3-pil python3-pil.imagetk")
+    exit(1)
+
+
+def pillow_error():
+    print('Problem with PIL (Pillow) - it is probably not installed. Exiting application...')
+    print("To install PIL and Tkinter, use following command:")
+    print("sudo apt-get install python3-tk python3-pil python3-pil.imagetk")
+    exit(1)
+
+
+try:
+    import tkinter
+    from tkinter import messagebox
+except:
+    tkinter_error()
+
+try:
+    from PIL import ImageTk, Image
+    from python_maze_printer import MazePrinter
+except:
+    pillow_error()
 
 
 def integer_check(in_str, acttyp):
@@ -37,7 +60,8 @@ def btn_generate_callback():
     x = int(entry_xsize.get())
     y = int(entry_ysize.get())
     if x < 4 or x > 100 or y < 4 or y > 100:
-        tkinter.messagebox.showerror('Error', 'Wrong size of maze. X and Y should be from interval <4, 100>.')
+        tkinter.messagebox.showerror(
+            'Error', 'Wrong size of maze. X and Y should be from interval <4, 100>.')
         return
 
     # overwrite old printer instance
@@ -62,9 +86,14 @@ if '-h' in sys.argv or '--help' in sys.argv:
     print("For proper working, user should have installed packages PIL (Pillow) and Tkinter.")
     print("User should run application on Linux capable of running GUI.")
     print("For guaranted experience use the newest version of Python.")
+    print("To install PIL and Tkinter, use following command:")
+    print("sudo apt-get install python3-tk python3-pil python3-pil.imagetk")
     exit()
 
-if sys.stdin.isatty():
+try:
+    if not os.environ['DISPLAY']:
+        raise Exception
+except:
     print('Application started from TTY without GUI, so it cannot start its GUI. Exiting application...')
     exit(1)
 
@@ -86,7 +115,8 @@ try:
     entry_xsize = tkinter.Entry(window, validate="key", width=10)
     entry_xsize.grid(column=1, row=1, padx=10, pady=5)
     entry_xsize.config(font=("Calibri", 22))
-    entry_xsize['validatecommand'] = (entry_xsize.register(integer_check), '%P', '%d')
+    entry_xsize['validatecommand'] = (
+        entry_xsize.register(integer_check), '%P', '%d')
     entry_xsize.insert(0, '11')
 
     label_ysize = tkinter.Label(window, text="Y size:")
@@ -95,19 +125,22 @@ try:
     entry_ysize = tkinter.Entry(window, validate="key", width=10)
     entry_ysize.grid(column=1, row=3, padx=10, pady=5)
     entry_ysize.config(font=("Calibri", 22))
-    entry_ysize['validatecommand'] = (entry_ysize.register(integer_check), '%P', '%d')
+    entry_ysize['validatecommand'] = (
+        entry_ysize.register(integer_check), '%P', '%d')
     entry_ysize.insert(0, '12')
 
-    button_generate = tkinter.Button(window, text="Generate maze", command=btn_generate_callback)
+    button_generate = tkinter.Button(
+        window, text="Generate maze", command=btn_generate_callback)
     button_generate.grid(column=1, row=4, padx=10, pady=10)
     button_generate.config(font=("Calibri", 22), height=2)
 
-    button_resolve = tkinter.Button(window, text="Resolve maze", command=btn_resolve_callback)
+    button_resolve = tkinter.Button(
+        window, text="Resolve maze", command=btn_resolve_callback)
     button_resolve.grid(column=1, row=5, padx=10, pady=10)
     button_resolve.config(font=("Calibri", 22), height=2, state='disabled')
 except:
-    print('Problem with Tkinter - it is probably not installed. Exiting application...')
-    exit(1)
+    tkinter_error()
+
 
 try:
     # initially transparent image
@@ -115,8 +148,7 @@ try:
     label_image = tkinter.Label(window, image=img)
     label_image.grid(column=0, row=0, rowspan=66)
 except:
-    print('Problem with PIL (Pillow) - it is probably not installed. Exiting application...')
-    exit(1)
+    pillow_error()
 
 
 window.mainloop()

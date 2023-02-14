@@ -160,6 +160,8 @@ foreach (@ARGV) {
         print "For proper working, user should have installed packages PIL (Pillow) and Tkinter.\n";
         print "User should run application on Linux capable of running GUI.\n";
         print "For guaranted experience use the newest version of Python.\n";
+        print "To install PIL and Tkinter, use following command:\n";
+        print "sudo apt-get install python3-tk python3-pil python3-pil.imagetk\n";
         exit;
     }
 }
