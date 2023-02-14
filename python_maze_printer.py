@@ -14,6 +14,10 @@ if '-h' in sys.argv or '--help' in sys.argv:
     print("After generation, picture is saved as file MazeUnresolved.jpeg.")
     print("After resolving, picture is saved as file MazeResolved.jpeg.")
     print("Picture is also shown in GUI.")
+    print("Requirements:")
+    print("For proper working, user should have installed packages PIL (Pillow) and Tkinter.")
+    print("User should run application on Linux capable of running GUI.")
+    print("For guaranted experience use the newest version of Python.")
     exit()
 elif not any('python_gui.py' in s for s in sys.argv):
     print("That script won't run separately from Python GUI. Starting Python GUI script instead...")

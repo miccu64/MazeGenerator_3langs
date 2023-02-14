@@ -156,6 +156,10 @@ foreach (@ARGV) {
         print "After generation, picture is saved as file MazeUnresolved.jpeg.\n";
         print "After resolving, picture is saved as file MazeResolved.jpeg.\n";
         print "Picture is also shown in GUI.\n";
+        print "Requirements:\n";
+        print "For proper working, user should have installed packages PIL (Pillow) and Tkinter.\n";
+        print "User should run application on Linux capable of running GUI.\n";
+        print "For guaranted experience use the newest version of Python.\n";
         exit;
     }
 }

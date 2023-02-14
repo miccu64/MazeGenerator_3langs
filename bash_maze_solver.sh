@@ -92,6 +92,10 @@ for i in "${grid[@]}"; do
         echo "After generation, picture is saved as file MazeUnresolved.jpeg."
         echo "After resolving, picture is saved as file MazeResolved.jpeg."
         echo "Picture is also shown in GUI."
+        echo "Requirements:"
+        echo "For proper working, user should have installed packages PIL (Pillow) and Tkinter."
+        echo "User should run application on Linux capable of running GUI."
+        echo "For guaranted experience use the newest version of Python."
         exit
     fi
 done
