@@ -59,11 +59,13 @@ def btn_resolve_callback():
 def btn_generate_callback():
     x = int(entry_xsize.get())
     y = int(entry_ysize.get())
-    if x < 4 or x > 100 or y < 4 or y > 100:
+    if x < 4 or x > 1000 or y < 4 or y > 1000:
         tkinter.messagebox.showerror(
-            'Error', 'Wrong size of maze. X and Y should be from interval <4, 100>.')
+            'Error', 'Wrong size of maze. X and Y should be from interval <4, 1000>.')
         return
 
+    window_width = window.winfo_width()
+    window_height = window.winfo_height()
     # overwrite old printer instance
     global printer
     printer = MazePrinter(x, y)
@@ -72,6 +74,9 @@ def btn_generate_callback():
     label_image.image = img
     # refreshes size of label containing image
     button_resolve.config(state='normal')
+    # without overwriting size window was still resizing
+    window.geometry("%dx%d+%d+%d" % (window_width, window_height, 0, 0))
+    label_image.update_idletasks()
     window.update_idletasks()
 
 
@@ -102,10 +107,6 @@ try:
 
     window = tkinter.Tk()
     window.title("Maze generator & resolver")
-    # zoomed and not resizable
-    window.attributes('-zoomed', True)
-    window.state('iconic')
-    window.resizable(False, False)
     window.columnconfigure(0, weight=11)
     window.columnconfigure(1, weight=1)
 
@@ -141,7 +142,6 @@ try:
 except:
     tkinter_error()
 
-
 try:
     # initially transparent image
     img = ImageTk.PhotoImage(Image.new('RGBA', (200, 50)))
@@ -150,5 +150,7 @@ try:
 except:
     pillow_error()
 
-
+# zoomed and not resizable
+window.attributes('-zoomed', True)
+window.resizable(False, False)
 window.mainloop()
