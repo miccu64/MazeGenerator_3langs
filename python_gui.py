@@ -41,7 +41,7 @@ def integer_check(in_str, acttyp):
 
 def rescale_image(image: Image):
     max_x = window.bbox(0, 0)[2]
-    max_y = window.winfo_height()
+    max_y = window.winfo_height() - 5
     x_ratio = max_x / image.width
     y_ratio = max_y / image.height
     ratio = x_ratio if x_ratio < y_ratio else y_ratio
