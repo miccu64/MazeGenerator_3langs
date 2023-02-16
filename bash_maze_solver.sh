@@ -105,7 +105,8 @@ done
 argvLength="$#"
 if [ "$argvLength" -lt "9" ]; then
     echo "That script won't run separately from Python GUI. Starting Python GUI script instead..."
-    ./python_gui.py & exit
+    DIR="$(cd "$(dirname "$0")" && pwd)"
+    "$DIR"/python_gui.py & exit
 fi
 
 xSize="${grid[0]}"

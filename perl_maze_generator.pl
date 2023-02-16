@@ -4,6 +4,7 @@
 
 use strict;
 use warnings;
+use FindBin qw($Bin);
 
 # 1 -> left, 2 -> right, 4 -> down, 8 -> up
 sub number_to_direction {
@@ -168,7 +169,7 @@ foreach (@ARGV) {
 if ( scalar @ARGV != 2 ) {
     print
 "That script won't run separately from Python GUI. Starting Python GUI script instead...";
-    system "./python_gui.py &";
+    system "${Bin}/python_gui.py &";
     exit;
 }
 

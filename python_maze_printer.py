@@ -4,7 +4,9 @@
 import random
 import subprocess
 import sys
+import os
 
+workingDir = os.path.dirname(os.path.realpath(__file__))
 if '-h' in sys.argv or '--help' in sys.argv:
     print("Application goal is to generate mazes with size specified by user and allow him to resolve it programmatically.")
     print("Different application parts are built in Python (GUI/languages connector), Perl (generator) and Bash (resolver).")
@@ -21,7 +23,7 @@ if '-h' in sys.argv or '--help' in sys.argv:
     exit()
 elif not any('python_gui.py' in s for s in sys.argv):
     print("That script won't run separately from Python GUI. Starting Python GUI script instead...")
-    subprocess.Popen(['./python_gui.py'])
+    subprocess.Popen([workingDir + '/python_gui.py'])
     exit()
 
 try:
@@ -60,9 +62,10 @@ class MazePrinter:
                     self.insert_wall(draw, x, y, True)
 
         if len(path) > 0:
-            img.save('MazeResolved.jpeg', 'JPEG')
+            print(workingDir)
+            img.save(workingDir + '/MazeResolved.jpeg', 'JPEG')
         else:
-            img.save('MazeUnresolved.jpeg', 'JPEG')
+            img.save(workingDir + '/MazeUnresolved.jpeg', 'JPEG')
         return img
 
     def insert_wall(self, draw: ImageDraw, x: int, y: int, vertical: bool):
@@ -130,7 +133,7 @@ class MazePrinter:
 
     def generate_maze(self):
         # run Perl script and get its STDOUT
-        result = subprocess.run(['./perl_maze_generator.pl', str(self.x_size),
+        result = subprocess.run([workingDir + '/perl_maze_generator.pl', str(self.x_size),
                                 str(self.y_size)], stdout=subprocess.PIPE, text=True)
         grid = self.get_2d_grid(result.stdout, self.x_size, self.y_size)
         return grid
@@ -138,7 +141,7 @@ class MazePrinter:
     def resolve_maze(self):
         # run Bash script and get its STDOUT
         # -1, bcs I appended maze by 1 in x and y for proper printing
-        args = ['./bash_maze_solver.sh', str(self.x_size - 1), str(self.y_size - 1), str(self.apertures[0][0] - 1), str(self.apertures[0][1]),
+        args = [workingDir + '/bash_maze_solver.sh', str(self.x_size - 1), str(self.y_size - 1), str(self.apertures[0][0] - 1), str(self.apertures[0][1]),
                 str(self.apertures[1][0] - 1), str(self.apertures[1][1] - 1)]
         for y in range(self.y_size - 1):
             for x in range(self.x_size - 1):
