@@ -3,6 +3,6 @@
 Application allows togenerate random mazes and resolves them. Maze is shown in GUI and saved to image file.
 
 Maze generator is written in 3 parts:
-- Python - GUI and languages connector
+- Python - GUI and languages connector (uses Tkinter and PIL)
 - Perl - maze generator
 - Bash - maze resolver.
